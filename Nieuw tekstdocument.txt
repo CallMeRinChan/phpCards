@@ -1,0 +1,113 @@
+#reset{ position: absolute;bottom:0px;} // in de <style>
+
+session_start(); // 
+
+if(isset($_GET['RESET'])){
+	session_destroy();
+	header('location:index.php');
+}
+
+if(isset($_SESSION['stapel'])){
+	$stapel = $_SESSION['stapel'];
+	$speler = $_SESSION['speler'];
+	$dieler = $_SESSION['dieler'];
+}else{ // new game
+	file_put_contents('log.js', "console.log('new game');/n");
+	$stapel = new stapel();
+	$speler = new speler("fransje");
+	$speler->GeefGeld(5);
+	$speler->KrijgKaart($stapel->GeefKaart);
+	$dieler->KrijgKaart($stapel->GeefKaart);
+	$speler->KrijgKaart($stapel->GeefKaart);
+	$dieler->KrijgKaart($stapel->GeefKaart);
+	$speler->tellen();
+}
+
+if(isset($_GET['sla'])){
+	if($speler->KrijgKaart($stapel->GeefKaart())){
+}else{ // dood
+echo "{$speler->naam} is helaas gestorven";
+}
+}
+
+
+
+<a href="?reset" id="reset"> RESET </a>
+
+
+
+
+<?php // onderaan de file onder de html
+
+$_SESSION['stapel'] = $stapel;
+$_SESSION['speler'] = $speler;
+$_SESSION['dieler'] = $dieler;
+
+?>
+
+// stapel.php
+
+	$this->schudden(); // onderin de construct
+
+	public function schudden(){
+		shuffle($this->kaarten);
+	}
+
+// speler.php
+
+$totaal = $this->tellen(); // onderin krijgkaart function
+if($totaal > 21){
+	Console("{$speler->naam} is dood.");
+	return false;
+}
+return true;
+ // normaalgesproken einde function
+
+public function  tellen(){	// onderin
+	$totaal = 0;
+	foreach($this->kaarten as $key => $kaart){
+		$totaal += $kaart->getWaarde();
+	}
+	Console("{$speler->naam} telt: {$totaal} punten.");
+	return $totaal;
+}
+
+
+
+// class.php (kaart)
+
+public function getWaarde(){
+	if($this->zijde){
+		if($this->waarde =="A"){
+			return 11;
+		}
+		if($this->waarde =="K" || $this->waarde =="Q" || $this->waarde =="B"){
+			return 10;
+		}
+		return $this->waarde;
+	}
+	return 0;
+}
+
+//dieler.php
+
+<?php
+
+class Dieler extends speler
+{
+	public function __construct(){
+		//copy paste speler construct $n wordt "Dealer"
+	}
+
+	public function KrijgKaart($kaart){
+	// copy paste krijgkaart van speler, verander speler naar dieler
+
+}
+
+?>
+
+include "dieler.php" // index.php onderaan bij de includes
+
+$dieler = new Dieler();
+
+$dieler->GeefGeld(25);
