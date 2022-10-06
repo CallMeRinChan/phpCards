@@ -55,6 +55,8 @@ $_SESSION['dieler'] = $dieler;
 
 // speler.php
 
+//$kaarten moet public worden
+
 $totaal = $this->tellen(); // onderin krijgkaart function
 if($totaal > 21){
 	Console("{$speler->naam} is dood.");
@@ -96,7 +98,7 @@ public function getWaarde(){
 class Dieler extends speler
 {
 	public function __construct(){
-		//copy paste speler construct $n wordt "Dealer"
+		parent::__construct("Dealer");
 	}
 
 	public function KrijgKaart($kaart){
